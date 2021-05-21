@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { RouteComponentProps } from 'react-router'
-import { Paper, Box, Drawer, makeStyles } from '@material-ui/core'
+import { Paper, Box, Drawer } from '@material-ui/core'
 import { ArrowUpward } from '@material-ui/icons'
 import { SecondaryButton } from '../../components'
 import { OFFERS_LIST } from '../../fakeData'
@@ -8,16 +8,7 @@ import { GiveDrawer, OffersList, Filter } from './parts'
 import { GiveFormFields, FilterFields } from './types'
 import { Direction } from '../../components/DirectionsSelect/types'
 
-const useStyles = makeStyles(() => ({
-  giveBtnContainerr: {
-    position: 'absolute',
-    top: '-100px',
-    right: '0',
-  },
-}))
-
-export const Give = (routeProps: RouteComponentProps) => {
-  const classes = useStyles()
+export const Give = (props: RouteComponentProps) => {
   const [giveDrawerState, setGiveDrawerState] = useState(false)
   const [form, setForm] = useState<GiveFormFields>({
     flightFrom: null,
@@ -63,12 +54,12 @@ export const Give = (routeProps: RouteComponentProps) => {
               onChangeField={onChangeField}
             />
             <OffersList offers={OFFERS_LIST} />
-            <div className={classes.giveBtnContainerr}>
+            <Box position="absolute" top="-100px" right="0">
               <SecondaryButton onClick={() => setGiveDrawerState(true)}>
                 Отдать багаж
                 <ArrowUpward style={{ marginLeft: '8px' }} />
               </SecondaryButton>
-            </div>
+            </Box>
             <Drawer anchor="right" open={giveDrawerState} onClose={() => setGiveDrawerState(false)}>
               <GiveDrawer
                 {...form}

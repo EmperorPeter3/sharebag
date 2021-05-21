@@ -1,6 +1,15 @@
 import axios from 'axios'
 
-const instance = axios.create()
+const HOST = 'http://localhost:5050'
+const API_PREFIX = '/api'
+
+export const API_URL = HOST + API_PREFIX
+
+const config = {
+  baseURL: API_URL,
+}
+
+const instance = axios.create(config)
 
 instance.interceptors.request.use(
   async (config) => {
