@@ -1,44 +1,85 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { RouteComponentProps } from 'react-router'
-import axios from 'axios'
-import { Formik } from 'formik'
-import Box from '@material-ui/core/Box'
-import { FormView } from './FormView'
+import { Paper, Box, Drawer, makeStyles } from '@material-ui/core'
+import { ArrowUpward } from '@material-ui/icons'
+import { SecondaryButton } from '../../components'
+import { OFFERS_LIST } from '../../fakeData'
+import { GiveDrawer, OffersList, Filter } from './parts'
+import { GiveFormFields, FilterFields } from './types'
+import { Direction } from '../../components/DirectionsSelect/types'
 
-export const Give = (routeProps: RouteComponentProps) => (
-  <Box px={30} py={10}>
-    <Box pb={12} fontSize={40} fontWeight={300}>
-      Предложения перевозчиков
+const useStyles = makeStyles(() => ({
+  giveBtnContainerr: {
+    position: 'absolute',
+    top: '-100px',
+    right: '0',
+  },
+}))
+
+export const Give = (routeProps: RouteComponentProps) => {
+  const classes = useStyles()
+  const [giveDrawerState, setGiveDrawerState] = useState(false)
+  const [form, setForm] = useState<GiveFormFields>({
+    flightFrom: null,
+    flightTo: null,
+    flightDate: '',
+    flightNumber: '',
+    luggageWeight: 0,
+    luggageDescription: '',
+    luggagePhoto: '',
+    name: '',
+    surname: '',
+    phone: '',
+    email: '',
+  })
+
+  const filterFields: FilterFields = {
+    flightFrom: form.flightFrom,
+    flightTo: form.flightTo,
+    flightDate: form.flightDate,
+    luggageWeight: form.luggageWeight,
+  }
+
+  const onChangeField =
+    (field: string) => (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+      setForm({ ...form, [field]: event.target.value })
+    }
+
+  const onChangeDirectionField = (field: string) => (event: any, direction: Direction | null) => {
+    setForm({ ...form, [field]: direction })
+  }
+
+  return (
+    <Box px={20} py={10}>
+      <Paper>
+        <Box px={6} py={4}>
+          <Box pb={12} fontSize={40} fontWeight={300}>
+            Предложения перевозчиков
+          </Box>
+          <Box position="relative">
+            <Filter
+              {...filterFields}
+              onChangeDirectionField={onChangeDirectionField}
+              onChangeField={onChangeField}
+            />
+            <OffersList offers={OFFERS_LIST} />
+            <div className={classes.giveBtnContainerr}>
+              <SecondaryButton onClick={() => setGiveDrawerState(true)}>
+                Отдать багаж
+                <ArrowUpward style={{ marginLeft: '8px' }} />
+              </SecondaryButton>
+            </div>
+            <Drawer anchor="right" open={giveDrawerState} onClose={() => setGiveDrawerState(false)}>
+              <GiveDrawer
+                {...form}
+                onChangeDirectionField={onChangeDirectionField}
+                onChangeField={onChangeField}
+                onSubmit={() => {}}
+              />
+            </Drawer>
+          </Box>
+        </Box>
+      </Paper>
     </Box>
-    <Formik
-      initialValues={{
-        flightInfo: {
-          from: '',
-          to: '',
-          dateTime: '',
-          flightNumber: '',
-        },
-        luggageInfo: {
-          luggageDescription: '',
-          weight: '',
-          luggagePhoto: '',
-        },
-        contactInfo: {
-          name: '',
-          surname: '',
-          phone: '',
-          email: '',
-        },
-      }}
-      onSubmit={async values => {
-        const response = await axios.post('/api/give', values)
-        const { id } = response.data
-        localStorage.setItem('id', id)
-        localStorage.setItem('name', values.contactInfo.name)
-        localStorage.setItem('type', 'give')
-        routeProps.history.push('/')
-      }}
-      render={renderProps => <FormView {...renderProps} />}
-    />
-  </Box>
-)
+  )
+}

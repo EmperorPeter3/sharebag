@@ -4,10 +4,10 @@ import Button from '@material-ui/core/Button'
 import { withStyles } from '@material-ui/core/styles'
 import { purple, grey } from '@material-ui/core/colors'
 import Typography from '@material-ui/core/Typography'
-import { FormViewProps } from './types'
+import { GiveDrawerProps } from '../../types'
 import { FlightInfo, LuggageInfo, ContactInfo } from './sections/index'
 
-const SubmitButton = withStyles(theme => ({
+const SubmitButton = withStyles((theme) => ({
   root: {
     height: '44px',
     width: '226px',
@@ -25,13 +25,9 @@ const SubmitButton = withStyles(theme => ({
   },
 }))(Button)
 
-export const GiveDrawer = ({
-  handleChange,
-  values: { flightInfo, luggageInfo, contactInfo },
-  handleSubmit,
-}: FormViewProps) => (
+export const GiveDrawer = ({ onSubmit, ...props }: GiveDrawerProps) => (
   <Box width={540}>
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={onSubmit}>
       <Box bgcolor={purple[400]} color="#fff" pt={2} pl={8} pb={2}>
         Заявка на перевозку груза
       </Box>
@@ -43,9 +39,9 @@ export const GiveDrawer = ({
           данные, при помощи которых с вами свяжется перевозчик.
         </Typography>
       </Box>
-      <FlightInfo handleChange={handleChange} {...flightInfo} />
-      <LuggageInfo handleChange={handleChange} {...luggageInfo} />
-      <ContactInfo handleChange={handleChange} {...contactInfo} />
+      <FlightInfo {...props} />
+      <LuggageInfo {...props} />
+      <ContactInfo {...props} />
       <Box display="flex" justifyContent="flex-end" px={8}>
         <SubmitButton type="submit">Разместить заявку</SubmitButton>
       </Box>

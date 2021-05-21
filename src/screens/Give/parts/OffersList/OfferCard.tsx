@@ -8,7 +8,7 @@ import FlightIcon from '@material-ui/icons/Flight'
 import GradeIcon from '@material-ui/icons/Grade'
 import PaymentIcon from '@material-ui/icons/Payment'
 import WorkOutlineIcon from '@material-ui/icons/WorkOutline'
-import { OfferCardProps } from './types'
+import { OfferCardProps } from '../../types'
 
 const useStyles = makeStyles({
   card: {

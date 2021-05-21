@@ -1,14 +1,7 @@
 import React from 'react'
-import Box from '@material-ui/core/Box'
-import Grid from '@material-ui/core/Grid'
-import TextField from '@material-ui/core/TextField'
+import { makeStyles, Box, Grid, TextField, Button } from '@material-ui/core'
 import { grey } from '@material-ui/core/colors'
-import Input from '@material-ui/core/Input'
-import InputLabel from '@material-ui/core/InputLabel'
-import InputAdornment from '@material-ui/core/InputAdornment'
-import Button from '@material-ui/core/Button'
-import { makeStyles } from '@material-ui/core/styles'
-import { LuggageInfoProps } from '../types'
+import { LuggageInfoProps } from '../../../types'
 
 const useStyles = makeStyles(() => ({
   input: { display: 'none' },
@@ -17,9 +10,9 @@ const useStyles = makeStyles(() => ({
 
 export const LuggageInfo = ({
   luggageDescription,
-  weight,
   luggagePhoto,
-  handleChange,
+  luggageWeight,
+  onChangeField,
 }: LuggageInfoProps) => {
   const classes = useStyles()
 
@@ -39,25 +32,23 @@ export const LuggageInfo = ({
           <Grid item sm={12} xs={12}>
             <TextField
               multiline
-              name="luggageInfo.luggageDescription"
-              value={luggageDescription}
-              onChange={handleChange}
-              margin="normal"
-              variant="outlined"
               fullWidth
               label="Какой груз вы готовы взять"
+              value={luggageDescription}
+              onChange={onChangeField('luggageDescription')}
+              margin="normal"
+              variant="outlined"
             />
           </Grid>
           <Grid item sm={6} xs={12}>
-            <InputLabel htmlFor="adornment-amount">Вес груза</InputLabel>
-            <Input
-              id="adornment-amount"
+            <TextField
+              fullWidth
               required
+              variant="outlined"
+              label="Вес груза"
               type="number"
-              name="luggageInfo.weight"
-              value={weight}
-              onChange={handleChange}
-              startAdornment={<InputAdornment position="start">кг</InputAdornment>}
+              value={luggageWeight}
+              onChange={onChangeField('luggageWeight')}
             />
           </Grid>
           <Grid item sm={6} xs={12}>
@@ -68,8 +59,7 @@ export const LuggageInfo = ({
                 accept="image/*"
                 value={luggagePhoto}
                 className={classes.input}
-                name="luggageInfo.luggagePhoto"
-                onChange={handleChange}
+                onChange={onChangeField('luggagePhoto')}
               />
               <label className={classes.uploadLabel} htmlFor="ticket-file">
                 <Button variant="outlined" component="span">

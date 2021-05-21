@@ -1,58 +1,67 @@
+import { Direction } from '../../components/DirectionsSelect/types'
 import * as React from 'react'
 
-export type HandleChange = React.ChangeEventHandler<
-  HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
->
+export type OnChangeField = (
+  field: string,
+) => React.ChangeEventHandler<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
 
-export type FlightInfo = {
-  from: string
-  to: string
-  dateTime: string
+export type OnChangeDirectionField = (
+  field: string,
+) => (event: any, direction: Direction | null) => void
+
+export type GiveFormFields = {
+  flightFrom: Direction | null
+  flightTo: Direction | null
+  flightDate: string
   flightNumber: string
-}
-
-export type LuggageInfo = {
+  luggageWeight: number
   luggageDescription: string
-  weight: string
   luggagePhoto: string
-}
-
-export type ContactInfo = {
   name: string
   surname: string
   phone: string
   email: string
 }
 
-export type FlightInfoProps = FlightInfo & {
-  handleChange: HandleChange
+export type FilterFields = Pick<
+  GiveFormFields,
+  'flightFrom' | 'flightTo' | 'flightDate' | 'luggageWeight'
+>
+
+export type FlightInfoProps = Pick<
+  GiveFormFields,
+  'flightFrom' | 'flightTo' | 'flightDate' | 'flightNumber'
+> & {
+  onChangeField: OnChangeField
+  onChangeDirectionField: OnChangeDirectionField
 }
 
-export type LuggageInfoProps = LuggageInfo & {
-  handleChange: HandleChange
+export type LuggageInfoProps = Pick<
+  GiveFormFields,
+  'luggageWeight' | 'luggageDescription' | 'luggagePhoto'
+> & {
+  onChangeField: OnChangeField
 }
 
-export type ContactInfoProps = ContactInfo & {
-  handleChange: HandleChange
+export type ContactInfoProps = Pick<GiveFormFields, 'name' | 'surname' | 'phone' | 'email'> & {
+  onChangeField: OnChangeField
 }
 
-type FormViewValues = {
-  flightInfo: FlightInfo
-  luggageInfo: LuggageInfo
-  contactInfo: ContactInfo
+export type FilterProps = FilterFields & {
+  onChangeField: OnChangeField
+  onChangeDirectionField: OnChangeDirectionField
 }
 
-export type FormViewProps = {
-  handleChange: HandleChange
-  handleSubmit: (event: React.FormEvent<HTMLFormElement>) => void
-  values: FormViewValues
-}
+export type GiveDrawerProps = FlightInfoProps &
+  LuggageInfoProps &
+  ContactInfoProps & {
+    onChangeField: OnChangeField
+    onChangeDirectionField: OnChangeDirectionField
+    onSubmit: (event: React.FormEvent<HTMLFormElement>) => void
+  }
 
-export type CarrierOffersListProps = {
-  from: string
-  to: string
-  dateTime: string
-  weight: string
+export type OffersListProps = {
+  offers: OfferCardProps[]
 }
 
 type OfferPersonalInfo = {
