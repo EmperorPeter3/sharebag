@@ -17,11 +17,13 @@ export type SignupFormFields = {
 }
 
 export type LoginFormProps = {
+  isLoading: boolean
   onLogin: (props: LoginFormFields) => void
   onFormViewChange: () => void
 }
 
 export type SignupFormProps = {
+  isLoading: boolean
   onSignup: (props: SignupFormFields) => void
   onFormViewChange: () => void
 }

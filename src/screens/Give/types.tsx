@@ -1,5 +1,6 @@
-import { Direction } from '../../components/DirectionsSelect/types'
 import * as React from 'react'
+import { Bag, Flight } from '../Home/types'
+import { Direction } from '../../components/DirectionsSelect/types'
 
 export type OnChangeField = (
   field: string,
@@ -16,11 +17,7 @@ export type GiveFormFields = {
   flightNumber: string
   luggageWeight: number
   luggageDescription: string
-  luggagePhoto: string
-  name: string
-  surname: string
-  phone: string
-  email: string
+  luggagePhoto: any
 }
 
 export type FilterFields = Pick<
@@ -32,6 +29,7 @@ export type FlightInfoProps = Pick<
   GiveFormFields,
   'flightFrom' | 'flightTo' | 'flightDate' | 'flightNumber'
 > & {
+  onChangeExactFlightInfo: (flight: Flight | null) => void
   onChangeField: OnChangeField
   onChangeDirectionField: OnChangeDirectionField
 }
@@ -40,21 +38,20 @@ export type LuggageInfoProps = Pick<
   GiveFormFields,
   'luggageWeight' | 'luggageDescription' | 'luggagePhoto'
 > & {
-  onChangeField: OnChangeField
-}
-
-export type ContactInfoProps = Pick<GiveFormFields, 'name' | 'surname' | 'phone' | 'email'> & {
+  onChangePhoto: (url: any) => void
   onChangeField: OnChangeField
 }
 
 export type FilterProps = FilterFields & {
+  onSearch: (params: BagRequestsParams) => void
   onChangeField: OnChangeField
   onChangeDirectionField: OnChangeDirectionField
 }
 
 export type GiveDrawerProps = FlightInfoProps &
-  LuggageInfoProps &
-  ContactInfoProps & {
+  LuggageInfoProps & {
+    onChangeExactFlightInfo: (flight: Flight | null) => void
+    onChangePhoto: (url: any) => void
     onChangeField: OnChangeField
     onChangeDirectionField: OnChangeDirectionField
     onSubmit: (event: React.FormEvent<HTMLFormElement>) => void
@@ -83,4 +80,18 @@ export type OfferCardProps = {
   personalInfo: OfferPersonalInfo
   flightInfo: OfferFlightInfo
   luggageInfo: OfferLuggageInfo
+}
+
+export type BagRequestsParams = {
+  from: string // date from
+  to?: string // date to
+  depatrureStationCode: string
+  arrivalStationCode: string
+  typeId?: string
+}
+
+export type GiveBagRequestParams = {
+  requestTypeId: 2
+  bag: Bag
+  flight: Flight
 }

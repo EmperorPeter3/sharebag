@@ -5,6 +5,7 @@ import {
   // issue: https://stackoverflow.com/questions/61220424/material-ui-drawer-finddomnode-is-deprecated-in-strictmode
   unstable_createMuiStrictModeTheme as createMuiTheme,
 } from '@material-ui/core'
+import { yellow, purple } from '@material-ui/core/colors'
 
 export const accentsColors = {
   green: {
@@ -27,14 +28,14 @@ export const accentsColors = {
 export const theme = createMuiTheme({
   palette: {
     primary: {
-      light: '#2AA2EE', // blue light
-      main: '#0255D1', // blue middle
-      dark: '#03325C', // blue darkest
+      light: purple[200],
+      main: purple[400],
+      dark: purple[600],
     },
     secondary: {
-      light: '#B2CAE1', // blue pale
-      main: '#6EF6FF', // accent cyan
-      dark: '#043f6b',
+      light: yellow[200],
+      main: yellow[400],
+      dark: yellow[600],
     },
     background: {
       paper: '#F3FAFF', // blue bg
@@ -129,15 +130,7 @@ export const theme = createMuiTheme({
         textTransform: 'none',
       },
       containedSizeLarge: {
-        padding: '12px 32px',
-      },
-      outlinedSizeLarge: {
-        padding: '11px 32px',
-      },
-      containedPrimary: {
-        '&:hover': {
-          backgroundColor: '#0044AA',
-        },
+        padding: '16px 30px',
       },
     },
     MuiFormLabel: {

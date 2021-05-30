@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { BrowserRouter, Route } from 'react-router-dom'
 import { Box, makeStyles, ThemeProvider } from '@material-ui/core'
 import background from '../images/home_bg_1.jpg'
-import { NotificationSystem } from '../components/NotificationSystem'
+import { NotificationSystem, UserAccountProvider } from '../components'
 import { Home } from '../screens/Home'
 import { Give } from '../screens/Give'
 import { Login } from '../screens/Login'
@@ -48,10 +48,10 @@ export const App = () => {
             minHeight="100vh"
           >
             {token ? (
-              <>
+              <UserAccountProvider>
                 <Route path={ROUTES.HOME} exact component={Home} />
                 <Route path={ROUTES.GIVE} exact component={Give} />
-              </>
+              </UserAccountProvider>
             ) : (
               <Login setToken={setToken} />
             )}

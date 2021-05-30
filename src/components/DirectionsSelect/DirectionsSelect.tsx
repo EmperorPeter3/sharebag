@@ -13,7 +13,7 @@ export const DirectionsSelect = ({ required, label, value, onChange }: Direction
   const debouncedSearch = useDebounce(searchTerm, 500)
 
   useEffect(() => {
-    if (debouncedSearch) {
+    if (debouncedSearch.length > 2) {
       setIsLoading(true)
       getDirections({ search: debouncedSearch }).then((results) => {
         setIsLoading(false)
@@ -30,6 +30,9 @@ export const DirectionsSelect = ({ required, label, value, onChange }: Direction
 
   return (
     <Autocomplete
+      noOptionsText={
+        debouncedSearch.length > 2 ? 'Направлений не найдено' : 'Введите больше 2-х символов'
+      }
       loading={isLoading}
       options={options}
       value={value}

@@ -1,9 +1,8 @@
 import React, { useState } from 'react'
 import { RouteComponentProps } from 'react-router'
-import { Grid, Box, Drawer } from '@material-ui/core'
+import { Grid, Box, Drawer, Button } from '@material-ui/core'
 import { ArrowUpward, ArrowDownward } from '@material-ui/icons'
-import { TakeForm } from './parts/TakeForm'
-import { PrimaryButton, SecondaryButton } from 'components'
+import { TakeDrawer } from './parts/TakeDrawer'
 
 type AboutProps = {
   onGiveClick: () => void
@@ -22,32 +21,32 @@ const About = ({ onGiveClick, onTakeClick }: AboutProps) => (
           </Grid>
           <Grid item sm={12} xs={12}>
             <Box
-              mb={16}
               textAlign="center"
               letterSpacing={1}
               fontSize={24}
               fontWeight={300}
               color="rgba(255, 255, 255, 0.67)"
+              mb={4}
             >
               Протяни сумку помощи!
             </Box>
           </Grid>
         </Grid>
-        <Grid container spacing={3}>
+        <Grid container>
           <Grid item sm={6} xs={6}>
             <Box display="flex" justifyContent="center">
-              <PrimaryButton onClick={onTakeClick}>
+              <Button size="large" variant="contained" color="primary" onClick={onTakeClick}>
                 Взять багаж
                 <ArrowDownward style={{ marginLeft: '8px' }} />
-              </PrimaryButton>
+              </Button>
             </Box>
           </Grid>
           <Grid item sm={6} xs={6}>
             <Box display="flex" justifyContent="center">
-              <SecondaryButton onClick={onGiveClick}>
+              <Button size="large" variant="contained" color="secondary" onClick={onGiveClick}>
                 Отдать багаж
                 <ArrowUpward style={{ marginLeft: '8px' }} />
-              </SecondaryButton>
+              </Button>
             </Box>
           </Grid>
         </Grid>
@@ -70,7 +69,7 @@ export const Home = (props: RouteComponentProps) => {
         }}
       />
       <Drawer anchor="right" open={takeDrawerState} onClose={() => setTakeDrawerState(false)}>
-        <TakeForm {...props} />
+        <TakeDrawer />
       </Drawer>
     </Box>
   )

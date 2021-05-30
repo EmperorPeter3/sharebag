@@ -17,7 +17,6 @@ instance.interceptors.request.use(
     config.headers = {
       Authorization: `Bearer ${token}`,
       Accept: 'application/json',
-      'Content-Type': 'application/x-www-form-urlencoded',
     }
     return config
   },
@@ -38,7 +37,15 @@ instance.interceptors.response.use(
       window.location.reload()
       return instance(originalRequest)
     }
-    return Promise.reject(error)
+    if (typeof error.response.data === 'string') {
+      return Promise.reject(error.response.data)
+    }
+
+    if (error.response.data) {
+      return Promise.reject(error.response.data.title || 'Error')
+    }
+
+    return Promise.reject(error.response.statusText)
   },
 )
 

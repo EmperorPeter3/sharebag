@@ -1,28 +1,30 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import { RouteComponentProps } from 'react-router'
-import { Paper, Box, Drawer } from '@material-ui/core'
+import { Paper, Box, Drawer, Button } from '@material-ui/core'
 import { ArrowUpward } from '@material-ui/icons'
-import { SecondaryButton } from '../../components'
-import { OFFERS_LIST } from '../../fakeData'
 import { GiveDrawer, OffersList, Filter } from './parts'
-import { GiveFormFields, FilterFields } from './types'
+import * as api from './api'
+import { NotificationSystemContext } from '../../components'
 import { Direction } from '../../components/DirectionsSelect/types'
+import { GiveFormFields, FilterFields, BagRequestsParams } from './types'
+import { Flight } from '../Home/types'
+
+const DEFAULT_STATE = {
+  flightFrom: null,
+  flightTo: null,
+  flightDate: '',
+  flightNumber: '',
+  luggageWeight: 1,
+  luggageDescription: '',
+  luggagePhoto: '',
+}
 
 export const Give = (props: RouteComponentProps) => {
   const [giveDrawerState, setGiveDrawerState] = useState(false)
-  const [form, setForm] = useState<GiveFormFields>({
-    flightFrom: null,
-    flightTo: null,
-    flightDate: '',
-    flightNumber: '',
-    luggageWeight: 0,
-    luggageDescription: '',
-    luggagePhoto: '',
-    name: '',
-    surname: '',
-    phone: '',
-    email: '',
-  })
+  const [form, setForm] = useState<GiveFormFields>(DEFAULT_STATE)
+  const [exactFlightInfo, setExactFlightInfo] = useState<Flight | null>(null)
+  const [suggestions, setSuggestions] = useState<any>([])
+  const { addNotification } = useContext(NotificationSystemContext)
 
   const filterFields: FilterFields = {
     flightFrom: form.flightFrom,
@@ -40,32 +42,75 @@ export const Give = (props: RouteComponentProps) => {
     setForm({ ...form, [field]: direction })
   }
 
+  const onChangePhoto = (url: any) => {
+    setForm({ ...form, luggagePhoto: url })
+  }
+
+  const onSearch = async (params: BagRequestsParams) => {
+    const result = await api.getBagRequests(params)
+    setSuggestions(result)
+  }
+
+  const onSendBagRequest = async (event: React.FormEvent) => {
+    event.preventDefault()
+    if (!exactFlightInfo) return
+    try {
+      await api.sendGiveBagRequest({
+        requestTypeId: 2,
+        bag: {
+          descriprion: form.luggageDescription,
+          weight: form.luggageWeight,
+          photo: form.luggagePhoto,
+        },
+        flight: {
+          arrivalStationCode: form.flightFrom!.id,
+          depatrureStationCode: form.flightTo!.id,
+          arrivalTime: exactFlightInfo.arrivalTime,
+          departureTime: exactFlightInfo.departureTime,
+          flightNumber: form.flightNumber,
+          ticketPhoto: null,
+        },
+      })
+      addNotification({ level: 'success', message: 'Заявка успешно создана!' })
+    } catch (error) {
+      addNotification({ level: 'error', message: error })
+    }
+  }
+
   return (
     <Box px={20} py={10}>
       <Paper>
         <Box px={6} py={4}>
-          <Box pb={12} fontSize={40} fontWeight={300}>
-            Предложения перевозчиков
+          <Box display="flex" justifyContent="space-between" pb={12}>
+            <Box fontSize={40} fontWeight={300}>
+              Предложения перевозчиков
+            </Box>
+            <Button
+              size="large"
+              variant="contained"
+              color="secondary"
+              onClick={() => setGiveDrawerState(true)}
+            >
+              Отдать багаж
+              <ArrowUpward style={{ marginLeft: '8px' }} />
+            </Button>
           </Box>
           <Box position="relative">
             <Filter
               {...filterFields}
               onChangeDirectionField={onChangeDirectionField}
               onChangeField={onChangeField}
+              onSearch={onSearch}
             />
-            <OffersList offers={OFFERS_LIST} />
-            <Box position="absolute" top="-100px" right="0">
-              <SecondaryButton onClick={() => setGiveDrawerState(true)}>
-                Отдать багаж
-                <ArrowUpward style={{ marginLeft: '8px' }} />
-              </SecondaryButton>
-            </Box>
+            <OffersList offers={suggestions} />
             <Drawer anchor="right" open={giveDrawerState} onClose={() => setGiveDrawerState(false)}>
               <GiveDrawer
                 {...form}
+                onChangeExactFlightInfo={setExactFlightInfo}
                 onChangeDirectionField={onChangeDirectionField}
                 onChangeField={onChangeField}
-                onSubmit={() => {}}
+                onChangePhoto={onChangePhoto}
+                onSubmit={onSendBagRequest}
               />
             </Drawer>
           </Box>

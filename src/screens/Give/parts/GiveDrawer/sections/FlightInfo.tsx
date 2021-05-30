@@ -1,8 +1,13 @@
-import React, { useState } from 'react'
-import { Box, Grid, Checkbox, TextField, FormControlLabel } from '@material-ui/core'
-import { grey } from '@material-ui/core/colors'
+import React, { useContext, useEffect, useState } from 'react'
+import { Box, Grid, MenuItem, TextField } from '@material-ui/core'
+import {
+  DirectionsSelect,
+  DrawerHeader,
+  NotificationSystemContext,
+} from '../../../../../components'
+import { getFlights } from '../../../../Home/api'
+import { Flight, FlightParams } from '../../../../Home/types'
 import { FlightInfoProps } from '../../../types'
-import { DirectionsSelect } from '../../../../../components'
 
 export const FlightInfo = ({
   flightFrom,
@@ -11,93 +16,94 @@ export const FlightInfo = ({
   flightNumber,
   onChangeField,
   onChangeDirectionField,
+  onChangeExactFlightInfo,
 }: FlightInfoProps) => {
-  const [flightKnowledge, setFlightKnowledge] = useState(false)
+  const [flights, setFlights] = useState<Flight[]>([])
+  const { addNotification } = useContext(NotificationSystemContext)
+
+  useEffect(() => {
+    const fetchFlightNumbers = async (params: FlightParams) => {
+      let result: Flight[] = []
+      try {
+        result = await getFlights(params)
+      } catch (error) {
+        addNotification({ level: 'error', message: error })
+      } finally {
+        setFlights(result)
+      }
+    }
+    if (flightFrom && flightTo && flightDate) {
+      fetchFlightNumbers({ from: flightFrom.id, to: flightTo.id, date: flightDate })
+    }
+  }, [flightFrom, flightTo, flightDate, addNotification])
+
+  const onChangeFlightNumber = (event: any) => {
+    onChangeField('flightNumber')(event)
+    const flightInfo = flights.find(({ flightNumber }) => flightNumber === event.target.value)
+    onChangeExactFlightInfo(flightInfo || null)
+  }
+
+  const disabledFlightNumber = !flightFrom || !flightTo || !flightDate
 
   return (
     <>
-      <Box
-        px={8}
-        fontSize={12}
-        fontWeight={500}
-        color={grey[500]}
-        style={{ textTransform: 'uppercase' }}
-      >
-        Информация о рейсе
-      </Box>
-      <Box px={8} pb={12}>
-        <Box>
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={flightKnowledge}
-                onChange={({ target: { checked } }) => setFlightKnowledge(checked)}
-                value="flightKnowledge"
-                color="primary"
-                inputProps={{
-                  'aria-label': 'secondary checkbox',
-                }}
-              />
-            }
-            label="Я знаю номер рейса"
-          />
-        </Box>
-        {flightKnowledge ? (
-          <Grid container spacing={3} alignItems="center">
-            <Grid item sm={4} xs={12}>
-              <Box width="144px">
-                <TextField
-                  required
-                  fullWidth
-                  margin="normal"
-                  label="Номер рейса"
-                  value={flightNumber}
-                  onChange={onChangeField('flightNumber')}
-                />
-              </Box>
-            </Grid>
-            <Grid item sm={6} xs={12}>
-              <Box width="200px" height="40px">
-                <TextField
-                  id="datetime-local"
-                  label="Дата и время вылета"
-                  type="datetime-local"
-                  value={flightDate}
-                  onChange={onChangeField('flightDate')}
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                />
-              </Box>
-            </Grid>
+      <DrawerHeader>Информация о рейсе</DrawerHeader>
+      <Box mx={4}>
+        <Grid container spacing={1}>
+          <Grid item lg={6} md={6} sm={6} xs={12}>
+            <DirectionsSelect
+              required
+              label="Откуда"
+              value={flightFrom}
+              onChange={onChangeDirectionField('flightFrom')}
+            />
           </Grid>
-        ) : (
-          <Grid container spacing={3}>
-            <Grid item sm={4} xs={12}>
-              <Box width="144px">
-                <DirectionsSelect
-                  required
-                  label="Откуда"
-                  value={flightFrom}
-                  onChange={onChangeDirectionField('flightFrom')}
-                />
-              </Box>
-            </Grid>
-            <Grid item sm={4} xs={12}>
-              <Box width="144px">
-                <DirectionsSelect
-                  required
-                  label="Куда"
-                  value={flightTo}
-                  onChange={onChangeDirectionField('flightTo')}
-                />
-              </Box>
-            </Grid>
-            <Grid item sm={4} xs={12}>
-              фото билета
-            </Grid>
+          <Grid item lg={6} md={6} sm={6} xs={12}>
+            <DirectionsSelect
+              required
+              label="Куда"
+              value={flightTo}
+              onChange={onChangeDirectionField('flightTo')}
+            />
           </Grid>
-        )}
+        </Grid>
+        <Grid container spacing={1} alignItems="center">
+          <Grid item lg={6} md={6} sm={6} xs={12}>
+            <TextField
+              label="Дата вылета"
+              type="date"
+              value={flightDate}
+              onChange={onChangeField('flightDate')}
+              InputLabelProps={{
+                shrink: true,
+              }}
+            />
+          </Grid>
+
+          <Grid item lg={6} md={6} sm={6} xs={12}>
+            <TextField
+              required
+              select
+              disabled={disabledFlightNumber}
+              value={flightNumber}
+              variant="outlined"
+              margin="normal"
+              onChange={onChangeFlightNumber}
+              fullWidth
+              label="Номер рейса"
+            >
+              {flights.length ? (
+                flights.map((flight) => (
+                  <MenuItem key={flight.flightNumber} value={flight.flightNumber}>
+                    {flight.flightNumber}
+                  </MenuItem>
+                ))
+              ) : (
+                <MenuItem>Нет рейсов</MenuItem>
+              )}
+            </TextField>
+          </Grid>
+        </Grid>
       </Box>
     </>
   )

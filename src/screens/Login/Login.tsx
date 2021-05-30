@@ -1,10 +1,11 @@
 import React, { useContext, useState } from 'react'
-import { NotificationSystemContext } from '../../components/NotificationSystem'
+import { NotificationSystemContext } from '../../components'
 import * as api from './api'
 import { LoginForm, SignupForm } from './parts'
 import { LoginProps, LoginFormFields, SignupFormFields } from './types'
 
 export const Login = ({ setToken }: LoginProps) => {
+  const [isLoading, setIsLoading] = useState<boolean>(false)
   const [isLoginView, setIsLoginView] = useState<boolean>(true)
 
   const { addNotification } = useContext(NotificationSystemContext)
@@ -14,6 +15,7 @@ export const Login = ({ setToken }: LoginProps) => {
   }
 
   const onLogin = async (body: LoginFormFields) => {
+    setIsLoading(true)
     try {
       const result = await api.login(body)
       setToken(result)
@@ -23,10 +25,13 @@ export const Login = ({ setToken }: LoginProps) => {
         title: 'Error',
         message: error && error.response ? error.response.data : 'Unhandled error',
       })
+    } finally {
+      setIsLoading(false)
     }
   }
 
   const onSignup = async (body: SignupFormFields) => {
+    setIsLoading(true)
     try {
       await api.signup(body)
       toggleFormView()
@@ -37,12 +42,14 @@ export const Login = ({ setToken }: LoginProps) => {
         title: 'Error',
         message: error && error.response ? error.response.data : 'Unhandled error',
       })
+    } finally {
+      setIsLoading(false)
     }
   }
 
   return isLoginView ? (
-    <LoginForm onLogin={onLogin} onFormViewChange={toggleFormView} />
+    <LoginForm isLoading={isLoading} onLogin={onLogin} onFormViewChange={toggleFormView} />
   ) : (
-    <SignupForm onSignup={onSignup} onFormViewChange={toggleFormView} />
+    <SignupForm isLoading={isLoading} onSignup={onSignup} onFormViewChange={toggleFormView} />
   )
 }
