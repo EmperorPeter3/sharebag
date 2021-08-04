@@ -6,3 +6,6 @@ export const getBagRequests = async (params: BagRequestsParams) =>
 
 export const sendGiveBagRequest = async (body: GiveBagRequestParams) =>
   httpClient.post('bagRequest', body).then(({ data }: { data: any }) => data)
+
+export const getOfferInfo = async (id: number) =>
+  httpClient.get(`bagRequest/${id}`).then(({ data }: { data: any }) => data)

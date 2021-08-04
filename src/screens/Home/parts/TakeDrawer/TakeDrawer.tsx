@@ -56,8 +56,8 @@ export const TakeDrawer = () => {
           price: form.luggagePrice,
         },
         flight: {
-          arrivalStationCode: form.flightFrom!.id,
-          depatrureStationCode: form.flightTo!.id,
+          arrivalStationCode: form.flightTo!.id,
+          depatrureStationCode: form.flightFrom!.id,
           arrivalTime: exactFlightInfo.arrivalTime,
           departureTime: exactFlightInfo.departureTime,
           flightNumber: form.flightNumber,

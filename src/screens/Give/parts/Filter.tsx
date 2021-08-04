@@ -12,7 +12,9 @@ export const Filter = ({
   const onSearchClick = (event: React.FormEvent) => {
     event.preventDefault()
     onSearch({
-      from: form.flightDate,
+      typeId: '1',
+      from: form.flightDateFrom,
+      to: form.flightDateTo,
       depatrureStationCode: form.flightFrom!.id,
       arrivalStationCode: form.flightTo!.id,
     })
@@ -28,9 +30,25 @@ export const Filter = ({
               required
               variant="outlined"
               type="datetime-local"
-              label="Дата и время вылета"
-              value={form.flightDate}
-              onChange={onChangeField('flightDate')}
+              label="С ВРЕМЯ"
+              value={form.flightDateFrom}
+              onChange={onChangeField('flightDateFrom')}
+              InputLabelProps={{
+                shrink: true,
+              }}
+            />
+          </Box>
+        </Grid>
+        <Grid item>
+          <Box minWidth="180px">
+            <TextField
+              fullWidth
+              required
+              variant="outlined"
+              type="datetime-local"
+              label="ПО ВРЕМЯ"
+              value={form.flightDateTo}
+              onChange={onChangeField('flightDateTo')}
               InputLabelProps={{
                 shrink: true,
               }}

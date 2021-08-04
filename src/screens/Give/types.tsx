@@ -13,7 +13,8 @@ export type OnChangeDirectionField = (
 export type GiveFormFields = {
   flightFrom: Direction | null
   flightTo: Direction | null
-  flightDate: string
+  flightDateFrom: string
+  flightDateTo: string
   flightNumber: string
   luggageWeight: number
   luggageDescription: string
@@ -22,12 +23,12 @@ export type GiveFormFields = {
 
 export type FilterFields = Pick<
   GiveFormFields,
-  'flightFrom' | 'flightTo' | 'flightDate' | 'luggageWeight'
+  'flightFrom' | 'flightTo' | 'flightDateFrom' | 'flightDateTo' | 'luggageWeight'
 >
 
 export type FlightInfoProps = Pick<
   GiveFormFields,
-  'flightFrom' | 'flightTo' | 'flightDate' | 'flightNumber'
+  'flightFrom' | 'flightTo' | 'flightDateFrom' | 'flightNumber'
 > & {
   onChangeExactFlightInfo: (flight: Flight | null) => void
   onChangeField: OnChangeField
@@ -61,30 +62,36 @@ export type OffersListProps = {
   offers: OfferCardProps[]
 }
 
-type OfferPersonalInfo = {
-  name: string
-  rating: number
-}
+// type OfferPersonalInfo = {
+//   name: string
+//   rating: number
+// }
 
-type OfferFlightInfo = {
-  flightNumber: string
-  dateTime: string
-}
+// type OfferFlightInfo = {
+//   flightNumber: string
+//   dateTime: string
+// }
 
-type OfferLuggageInfo = {
-  weight: number
-  price: number
-}
+// type OfferLuggageInfo = {
+//   weight: number
+//   price: number
+// }
 
 export type OfferCardProps = {
-  personalInfo: OfferPersonalInfo
-  flightInfo: OfferFlightInfo
-  luggageInfo: OfferLuggageInfo
+  arrivalStation: string
+  bagPrice: number
+  bagWeight: number
+  date: string
+  depatrureStation: string
+  flightNumber: string
+  price: number
+  id: number
+  onClick: (id: number) => void
 }
 
 export type BagRequestsParams = {
   from: string // date from
-  to?: string // date to
+  to: string // date to
   depatrureStationCode: string
   arrivalStationCode: string
   typeId?: string

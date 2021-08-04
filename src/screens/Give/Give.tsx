@@ -12,7 +12,8 @@ import { Flight } from '../Home/types'
 const DEFAULT_STATE = {
   flightFrom: null,
   flightTo: null,
-  flightDate: '',
+  flightDateFrom: '',
+  flightDateTo: '',
   flightNumber: '',
   luggageWeight: 1,
   luggageDescription: '',
@@ -29,7 +30,8 @@ export const Give = (props: RouteComponentProps) => {
   const filterFields: FilterFields = {
     flightFrom: form.flightFrom,
     flightTo: form.flightTo,
-    flightDate: form.flightDate,
+    flightDateFrom: form.flightDateFrom,
+    flightDateTo: form.flightDateTo,
     luggageWeight: form.luggageWeight,
   }
 

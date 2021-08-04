@@ -12,7 +12,7 @@ import { FlightInfoProps } from '../../../types'
 export const FlightInfo = ({
   flightFrom,
   flightTo,
-  flightDate,
+  flightDateFrom,
   flightNumber,
   onChangeField,
   onChangeDirectionField,
@@ -32,10 +32,10 @@ export const FlightInfo = ({
         setFlights(result)
       }
     }
-    if (flightFrom && flightTo && flightDate) {
-      fetchFlightNumbers({ from: flightFrom.id, to: flightTo.id, date: flightDate })
+    if (flightFrom && flightTo && flightDateFrom) {
+      fetchFlightNumbers({ from: flightFrom.id, to: flightTo.id, date: flightDateFrom })
     }
-  }, [flightFrom, flightTo, flightDate, addNotification])
+  }, [flightFrom, flightTo, flightDateFrom, addNotification])
 
   const onChangeFlightNumber = (event: any) => {
     onChangeField('flightNumber')(event)
@@ -43,7 +43,7 @@ export const FlightInfo = ({
     onChangeExactFlightInfo(flightInfo || null)
   }
 
-  const disabledFlightNumber = !flightFrom || !flightTo || !flightDate
+  const disabledFlightNumber = !flightFrom || !flightTo || !flightDateFrom
 
   return (
     <>
@@ -72,8 +72,8 @@ export const FlightInfo = ({
             <TextField
               label="Дата вылета"
               type="date"
-              value={flightDate}
-              onChange={onChangeField('flightDate')}
+              value={flightDateFrom}
+              onChange={onChangeField('flightDateFrom')}
               InputLabelProps={{
                 shrink: true,
               }}
